@@ -18,12 +18,27 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: List directory contents
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path . -Recurse | Select-Object FullName
+          Write-Host "Current directory: $(Get-Location)"
+
       - name: Install dependencies
         shell: pwsh
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller
           if (Test-Path requirements.txt) { pip install -r requirements.txt }
+
+      - name: Verify spec file
+        shell: pwsh
+        run: |
+          if (-not (Test-Path GestorHorarios.spec)) {
+            Write-Error "GestorHorarios.spec not found!"
+            exit 1
+          }
+          Write-Host "GestorHorarios.spec found at: $(Resolve-Path GestorHorarios.spec)"
 
       - name: Build executable with PyInstaller
         shell: pwsh

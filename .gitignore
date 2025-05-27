@@ -32,7 +32,7 @@ ENV/
 
 # PyInstaller
 *.manifest
-*.spec
+# *.spec  # Comentamos esta línea para permitir que GestorHorarios.spec se suba
 
 # Windows
 *.exe
