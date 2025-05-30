@@ -376,6 +376,7 @@ class HorarioApp(QMainWindow):
             
             if self.modelos["Profesores"].insertRecord(-1, record):
                 self.modelos["Profesores"].submitAll()
+                self.modelos["Profesores"].select()
                 self.prof_nombre.clear()
                 self.prof_apellido.clear()
 
@@ -384,6 +385,7 @@ class HorarioApp(QMainWindow):
         if index.isValid() and self.confirm_action("¿Eliminar este profesor?"):
             self.modelos["Profesores"].removeRow(index.row())
             self.modelos["Profesores"].submitAll()
+            self.modelos["Profesores"].select()
 
     def add_asignatura(self):
         nombre = self.asig_nombre.text().strip()
@@ -396,6 +398,7 @@ class HorarioApp(QMainWindow):
             
             if self.modelos["Asignaturas"].insertRecord(-1, record):
                 self.modelos["Asignaturas"].submitAll()
+                self.modelos["Asignaturas"].select()
                 self.asig_nombre.clear()
                 self.asig_desc.clear()
 
@@ -404,6 +407,7 @@ class HorarioApp(QMainWindow):
         if index.isValid() and self.confirm_action("¿Eliminar esta asignatura?"):
             self.modelos["Asignaturas"].removeRow(index.row())
             self.modelos["Asignaturas"].submitAll()
+            self.modelos["Asignaturas"].select()
 
     def add_grupo(self):
         nombre = self.grupo_nombre.text().strip()
@@ -416,6 +420,7 @@ class HorarioApp(QMainWindow):
             
             if self.modelos["Grupos"].insertRecord(-1, record):
                 self.modelos["Grupos"].submitAll()
+                self.modelos["Grupos"].select()
                 self.grupo_nombre.clear()
                 self.grupo_desc.clear()
 
@@ -424,6 +429,7 @@ class HorarioApp(QMainWindow):
         if index.isValid() and self.confirm_action("¿Eliminar este grupo?"):
             self.modelos["Grupos"].removeRow(index.row())
             self.modelos["Grupos"].submitAll()
+            self.modelos["Grupos"].select()
 
     def add_aula(self):
         nombre = self.aula_nombre.text().strip()
@@ -436,6 +442,7 @@ class HorarioApp(QMainWindow):
             
             if self.modelos["Aulas"].insertRecord(-1, record):
                 self.modelos["Aulas"].submitAll()
+                self.modelos["Aulas"].select()
                 self.aula_nombre.clear()
                 self.aula_capacidad.clear()
 
@@ -444,6 +451,7 @@ class HorarioApp(QMainWindow):
         if index.isValid() and self.confirm_action("¿Eliminar este aula?"):
             self.modelos["Aulas"].removeRow(index.row())
             self.modelos["Aulas"].submitAll()
+            self.modelos["Aulas"].select()
 
     def add_horario(self):
         """Agrega un nuevo horario"""
@@ -531,6 +539,7 @@ class HorarioApp(QMainWindow):
         if index.isValid() and self.confirm_action("¿Eliminar este horario?"):
             self.horario_model.removeRow(index.row())
             self.horario_model.submitAll()
+            self.horario_model.select()
 
     def show_error(self, message):
         QMessageBox.warning(self, "Error", message)

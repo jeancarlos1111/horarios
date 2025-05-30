@@ -28,7 +28,7 @@ exe = EXE(
     a.datas,
     [],
     name='GestorHorarios',
-    debug=True,
+    debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
@@ -41,5 +41,5 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     icon='favicon.ico' if os.path.exists('favicon.ico') else None,
-    uac_admin=True,
+    uac_admin=False,
 )
