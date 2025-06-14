@@ -224,20 +224,27 @@ class GruposTab(QWidget):
                 # Buscar y dibujar clases para esta hora
                 for dia_id, horarios in horarios_por_dia.items():
                     for horario in horarios:
-                        hora_clase = QTime.fromString(horario['hora_inicio'], "hh:mm AP")
-                        if hora_clase == hora_actual:
+                        hora_clase_inicio = QTime.fromString(horario['hora_inicio'], "hh:mm AP")
+                        hora_clase_fin = QTime.fromString(horario['hora_fin'], "hh:mm AP")
+                        
+                        # Verificar si la clase está activa en esta hora
+                        if hora_clase_inicio <= hora_actual and hora_actual < hora_clase_fin:
                             x = margen_izq + ((dia_id - 1) * ancho_columna)
                             # Dibujar fondo de la clase
                             c.setFillColorRGB(0.9, 0.9, 0.9)
                             c.rect(x + 1, y - alto_celda + 1, ancho_columna - 2, alto_celda - 2, fill=1)
                             c.setFillColorRGB(0, 0, 0)
                             
-                            # Dibujar contenido de la clase
+                            # Dibujar contenido de la clase dentro de la celda
+                            margen_texto = 5
+                            linea_altura = 10
                             c.setFont("Helvetica-Bold", 8)
-                            c.drawString(x + 5, y - 15, horario['asignatura'])
+                            c.drawString(x + margen_texto, y - 15, horario['asignatura'])
                             c.setFont("Helvetica", 7)
-                            c.drawString(x + 5, y - 25, horario['profesor'])
-                            c.drawString(x + 5, y - 35, horario['aula'])
+                            c.drawString(x + margen_texto, y - 15 - linea_altura, horario['profesor'])
+                            # Aula y horario juntos
+                            texto_aula_horario = f"{horario['aula']}  {horario['hora_inicio']} - {horario['hora_fin']}"
+                            c.drawString(x + margen_texto, y - 15 - 2*linea_altura, texto_aula_horario)
                 
                 y -= alto_celda
                 hora_actual = hora_actual.addSecs(intervalo * 60)
