@@ -151,6 +151,9 @@ class HorariosTab(QWidget):
             while query.next():
                 self.hor_dia.addItem(query.value(1), query.value(0))
 
+        # Refrescar el modelo relacional para que tome los nuevos datos
+        self.horario_model.select()
+
     def add_horario(self):
         """Agrega un nuevo horario"""
         # Verificar selecciones
@@ -171,11 +174,16 @@ class HorariosTab(QWidget):
             return
         
         # Obtener valores
-        id_prof = self.hor_prof.currentData()
-        id_asig = self.hor_asig.currentData()
-        id_seccion = self.hor_seccion.currentData()
-        id_aula = self.hor_aula.currentData()
-        id_dia = self.hor_dia.currentData()
+        id_prof = self.hor_prof.itemData(self.hor_prof.currentIndex())
+        id_asig = self.hor_asig.itemData(self.hor_asig.currentIndex())
+        id_seccion = self.hor_seccion.itemData(self.hor_seccion.currentIndex())
+        id_aula = self.hor_aula.itemData(self.hor_aula.currentIndex())
+        id_dia = self.hor_dia.itemData(self.hor_dia.currentIndex())
+        print("ID PROFESOR:", id_prof)
+        print("ID ASIGNATURA:", id_asig)
+        print("ID SECCION:", id_seccion)
+        print("ID AULA:", id_aula)
+        print("ID DIA:", id_dia)
         hora_inicio = self.hora_inicio.time().toString("HH:mm")  # Guardamos en formato 24h
         hora_fin = self.hora_fin.time().toString("HH:mm")  # Guardamos en formato 24h
         
@@ -184,20 +192,23 @@ class HorariosTab(QWidget):
             show_error(self, "Conflicto de horario (profesor o aula ocupada)")
             return
         
-        # Insertar horario
-        row = self.horario_model.rowCount()
-        self.horario_model.insertRow(row)
-        self.horario_model.setData(self.horario_model.index(row, 1), id_prof)
-        self.horario_model.setData(self.horario_model.index(row, 2), id_asig)
-        self.horario_model.setData(self.horario_model.index(row, 3), id_seccion)
-        self.horario_model.setData(self.horario_model.index(row, 4), id_aula)
-        self.horario_model.setData(self.horario_model.index(row, 5), id_dia)
-        self.horario_model.setData(self.horario_model.index(row, 6), hora_inicio)
-        self.horario_model.setData(self.horario_model.index(row, 7), hora_fin)
-        
-        if not self.horario_model.submitAll():
-            show_error(self, "Error al agregar horario")
-            self.horario_model.revertAll()
+        # Insertar horario usando SQL directo
+        query = QSqlQuery(self.db)
+        query.prepare("""
+            INSERT INTO Horarios (id_profesor, id_asignatura, id_grupo, id_aula, id_dia, hora_inicio, hora_fin)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """)
+        query.addBindValue(id_prof)
+        query.addBindValue(id_asig)
+        query.addBindValue(id_seccion)
+        query.addBindValue(id_aula)
+        query.addBindValue(id_dia)
+        query.addBindValue(hora_inicio)
+        query.addBindValue(hora_fin)
+        if not query.exec_():
+            error = query.lastError().text()
+            show_error(self, f"Error al agregar horario: {error}")
+            return
         else:
             self.horario_model.select()
 

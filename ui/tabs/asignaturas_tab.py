@@ -1,9 +1,11 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QTableView, QMessageBox)
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from utils.dialog_utils import show_error, confirm_action
 
 class AsignaturasTab(QWidget):
+    datos_actualizados = pyqtSignal()
+
     def __init__(self, model_manager, db):
         super().__init__()
         self.model_manager = model_manager
@@ -62,6 +64,7 @@ class AsignaturasTab(QWidget):
             self.asig_nombre.clear()
             self.asig_desc.clear()
             self.model_manager.refresh_model("Asignaturas")
+            self.datos_actualizados.emit()
 
     def delete_asignatura(self):
         """Elimina la asignatura seleccionada"""
@@ -80,4 +83,5 @@ class AsignaturasTab(QWidget):
                 show_error(self, "Error al eliminar asignatura")
                 model.revertAll()
             else:
-                self.model_manager.refresh_model("Asignaturas") 
+                self.model_manager.refresh_model("Asignaturas")
+                self.datos_actualizados.emit() 

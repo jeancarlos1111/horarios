@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QTableView, QMessageBox)
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 
 class ProfesoresTab(QWidget):
+    datos_actualizados = pyqtSignal()
+
     def __init__(self, model_manager, db):
         super().__init__()
         self.model_manager = model_manager
@@ -61,6 +63,7 @@ class ProfesoresTab(QWidget):
             self.prof_nombre.clear()
             self.prof_apellido.clear()
             self.model_manager.refresh_model("Profesores")
+            self.datos_actualizados.emit()
 
     def delete_profesor(self):
         """Elimina el profesor seleccionado"""
@@ -79,4 +82,5 @@ class ProfesoresTab(QWidget):
                 QMessageBox.critical(self, "Error", "Error al eliminar profesor")
                 model.revertAll()
             else:
-                self.model_manager.refresh_model("Profesores") 
+                self.model_manager.refresh_model("Profesores")
+                self.datos_actualizados.emit() 

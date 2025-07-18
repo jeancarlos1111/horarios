@@ -1,13 +1,15 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QTableView, QMessageBox,
                              QFileDialog)
-from PyQt5.QtCore import Qt, QTime
+from PyQt5.QtCore import Qt, QTime, pyqtSignal
 from PyQt5.QtSql import QSqlQuery
 from utils.dialog_utils import show_error, confirm_action
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, landscape
 
 class GruposTab(QWidget):
+    datos_actualizados = pyqtSignal()
+
     def __init__(self, model_manager, db):
         super().__init__()
         self.model_manager = model_manager
@@ -69,6 +71,7 @@ class GruposTab(QWidget):
             self.grupo_nombre.clear()
             self.grupo_desc.clear()
             self.model_manager.refresh_model("Grupos")
+            self.datos_actualizados.emit()
 
     def delete_grupo(self):
         """Elimina el grupo seleccionado"""
@@ -88,6 +91,7 @@ class GruposTab(QWidget):
                 model.revertAll()
             else:
                 self.model_manager.refresh_model("Grupos")
+                self.datos_actualizados.emit()
 
     def generar_reporte_grupo(self):
         """Genera un reporte PDF con el horario del grupo seleccionado en formato calendario semanal"""
