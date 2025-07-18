@@ -1,10 +1,12 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QTableView, QMessageBox,
                              QSpinBox)
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from utils.dialog_utils import show_error, confirm_action
 
 class AulasTab(QWidget):
+    datos_actualizados = pyqtSignal()
+
     def __init__(self, model_manager, db):
         super().__init__()
         self.model_manager = model_manager
@@ -65,6 +67,7 @@ class AulasTab(QWidget):
             self.aula_nombre.clear()
             self.aula_capacidad.setValue(1)
             self.model_manager.refresh_model("Aulas")
+            self.datos_actualizados.emit()
 
     def delete_aula(self):
         """Elimina el aula seleccionada"""
@@ -83,4 +86,5 @@ class AulasTab(QWidget):
                 show_error(self, "Error al eliminar aula")
                 model.revertAll()
             else:
-                self.model_manager.refresh_model("Aulas") 
+                self.model_manager.refresh_model("Aulas")
+                self.datos_actualizados.emit() 

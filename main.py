@@ -36,14 +36,25 @@ class HorarioApp(QMainWindow):
 
     def create_tabs(self):
         """Crea todas las pestañas de la aplicación"""
-        # Pestaña de Profesores
-        self.tabs.addTab(ProfesoresTab(self.model_manager, self.db_manager.get_connection()), "Profesores")
-        
-        # Agregar las demás pestañas
-        self.tabs.addTab(AsignaturasTab(self.model_manager, self.db_manager.get_connection()), "Asignaturas")
-        self.tabs.addTab(GruposTab(self.model_manager, self.db_manager.get_connection()), "Secciones")
-        self.tabs.addTab(AulasTab(self.model_manager, self.db_manager.get_connection()), "Aulas")
-        self.tabs.addTab(HorariosTab(self.model_manager, self.db_manager.get_connection()), "Horarios")
+        # Crear instancias de las pestañas y guardarlas como atributos
+        self.tab_profesores = ProfesoresTab(self.model_manager, self.db_manager.get_connection())
+        self.tab_asignaturas = AsignaturasTab(self.model_manager, self.db_manager.get_connection())
+        self.tab_grupos = GruposTab(self.model_manager, self.db_manager.get_connection())
+        self.tab_aulas = AulasTab(self.model_manager, self.db_manager.get_connection())
+        self.tab_horarios = HorariosTab(self.model_manager, self.db_manager.get_connection())
+
+        # Agregar las pestañas al QTabWidget
+        self.tabs.addTab(self.tab_profesores, "Profesores")
+        self.tabs.addTab(self.tab_asignaturas, "Asignaturas")
+        self.tabs.addTab(self.tab_grupos, "Secciones")
+        self.tabs.addTab(self.tab_aulas, "Aulas")
+        self.tabs.addTab(self.tab_horarios, "Horarios")
+
+        # Conectar señales de actualización de datos
+        self.tab_profesores.datos_actualizados.connect(self.tab_horarios.load_combos)
+        self.tab_asignaturas.datos_actualizados.connect(self.tab_horarios.load_combos)
+        self.tab_grupos.datos_actualizados.connect(self.tab_horarios.load_combos)
+        self.tab_aulas.datos_actualizados.connect(self.tab_horarios.load_combos)
 
     def closeEvent(self, event):
         """Maneja el evento de cierre de la aplicación"""
